@@ -9,12 +9,16 @@ local username = getgenv().Set.user
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
 
-repeat
-    wait()
-    pcall(function()
-        SavedData = Library.Save.Get()
-    end)
-until type(SavedData) == "table";
+local function waitForSavedData()
+    repeat
+        wait()
+        pcall(function()
+            SavedData = Library.Save.Get()
+        end)
+    until type(SavedData) == "table"
+end
+
+waitForSavedData() -- Call the function to wait for saved data before proceeding
 
 local Network = Library.Network
 local Functions = Library.Functions
@@ -70,5 +74,7 @@ function SendDiamonds(options)
     end
 end
 
+-- Continue with the rest of your script
 -- Gọi hàm SendDiamonds với đối số là một bảng
 SendDiamonds({user = username, amount = "All"})
+
