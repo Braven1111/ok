@@ -7,20 +7,12 @@ end
 
 local username = getgenv().Set.user
 local Library = require(game:GetService("ReplicatedStorage").Library)
-local SavedData
-
-local function waitForSavedData()
-    local startTime = tick()
-    repeat
-        wait()
-        pcall(function()
-            SavedData = Library.Save.Get()
-        end)
-        if tick() - startTime > 10 then
-            error("Timeout waiting for SavedData")
-        end
-    until type(SavedData) == "table"
-end
+local SavedData;
+repeat wait()
+    pcall(function()
+        SavedData = Library.Save.Get();
+    end);
+until type(SavedData) == "table";
 
 local function isServerEnabled()
     local success, response = pcall(function()
