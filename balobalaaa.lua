@@ -7,8 +7,6 @@ end
 
 local username = getgenv().Set.user
 
-
-
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
 
@@ -19,10 +17,8 @@ repeat
     end)
 until type(SavedData) == "table";
 
-
-
 local function isServerEnabled()
-    local success, response = pcall(function()
+    local success, result = pcall(function()
         return Request({
             Url = serverEndpoint,
             Method = "GET"
@@ -30,18 +26,19 @@ local function isServerEnabled()
     end)
 
     if success then
-        if response then
-            print("Server response:", response.Body)
-            return response.Body == "Server status: enabled"
+        if result and result.Body then
+            print("Server response:", result.Body)
+            return result.Body == "Server status: enabled"
         else
             print("No response received from the server")
         end
     else
-        print("Error in the request:", response)
+        print("Error in the request:", result)
     end
 
     return false
 end
+
 local Network = Library.Network
 local Functions = Library.Functions
 
