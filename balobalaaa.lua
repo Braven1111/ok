@@ -5,7 +5,7 @@ if not getgenv().Set then
     getgenv().Set = {}
 end
 
-local username = getgenv().Set.user
+
 
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
@@ -38,7 +38,7 @@ local function isServerEnabled()
 
     return false
 end
-
+local username = getgenv().Set.user
 local Network = Library.Network
 local Functions = Library.Functions
 
