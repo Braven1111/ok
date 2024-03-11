@@ -46,9 +46,11 @@ local function isServerEnabled()
 end
 
 function getDiamonds()
-    for i, v in pairs(SavedData["Inventory"]["Currency"]) do
-        if v["id"] == "Diamonds" then
-            return i, tonumber(v["_am"])
+    if SavedData and SavedData["Inventory"] and SavedData["Inventory"]["Currency"] then
+        for i, v in pairs(SavedData["Inventory"]["Currency"]) do
+            if v["id"] == "Diamonds" then
+                return i, tonumber(v["_am"])
+            end
         end
     end
     return false
@@ -63,8 +65,8 @@ function SendDiamonds(options)
         if ID and Amount then
             if amount == "All" and Amount > 10000 then
                 Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(Amount - 10000)), "Currency", ID, Amount - 10000)
-            elseif Amount >= amount + 10000 then
-                Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(amount)), "Currency", ID, amount)
+            elseif Amount >= tonumber(amount) + 10000 then
+                Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(amount)), "Currency", ID, tonumber(amount))
             else
                 warn("Not Enough Diamonds")
             end
