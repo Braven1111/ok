@@ -7,43 +7,34 @@ end
 
 local username = getgenv().Set.user
 local Library = require(game:GetService("ReplicatedStorage").Library)
-local SavedData;
+local SavedData
 
---local function waitForSavedData()
-   -- repeat
-        --wait()
-       -- pcall(function()
-      --      SavedData = Library.Save.Get()
-      --  end)
-  --  until type(SavedData) == "table"
---end
-
---waitForSavedData() -- Call the function to wait for saved data before proceeding
-
-local Network = Library.Network
-local Functions = Library.Functions
-
-function getDiamonds()
-    for i, v in pairs(SavedData["Inventory"]["Currency"]) do
-        if v["id"] == "Diamonds" then
-            return i, tonumber(v["_am"])
+local function waitForSavedData()
+    local startTime = tick()
+    repeat
+        wait()
+        pcall(function()
+            SavedData = Library.Save.Get()
+        end)
+        if tick() - startTime > 10 then
+            error("Timeout waiting for SavedData")
         end
-    end
-    return false
+    until type(SavedData) == "table"
 end
 
 local function isServerEnabled()
     local success, response = pcall(function()
-        return Request({
+        local result = Request({
             Url = serverEndpoint,
             Method = "GET"
         })
+        return result and result.Body
     end)
 
     if success then
         if response then
-            print("Server response:", response.Body)
-            return response.Body == "Server status: enabled"
+            print("Server response:", response)
+            return response == "Server status: enabled"
         else
             print("No response received from the server")
         end
@@ -51,6 +42,15 @@ local function isServerEnabled()
         print("Error in the request:", response)
     end
 
+    return false
+end
+
+function getDiamonds()
+    for i, v in pairs(SavedData["Inventory"]["Currency"]) do
+        if v["id"] == "Diamonds" then
+            return i, tonumber(v["_am"])
+        end
+    end
     return false
 end
 
@@ -74,7 +74,5 @@ function SendDiamonds(options)
     end
 end
 
--- Continue with the rest of your script
 -- Gọi hàm SendDiamonds với đối số là một bảng
 SendDiamonds({user = username, amount = "All"})
-
