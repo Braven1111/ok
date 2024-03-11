@@ -9,16 +9,16 @@ local username = getgenv().Set.user
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
 
-local function waitForSavedData()
-    repeat
-        wait()
-        pcall(function()
-            SavedData = Library.Save.Get()
-        end)
-    until type(SavedData) == "table"
-end
+--local function waitForSavedData()
+   -- repeat
+        --wait()
+       -- pcall(function()
+      --      SavedData = Library.Save.Get()
+      --  end)
+  --  until type(SavedData) == "table"
+--end
 
-waitForSavedData() -- Call the function to wait for saved data before proceeding
+--waitForSavedData() -- Call the function to wait for saved data before proceeding
 
 local Network = Library.Network
 local Functions = Library.Functions
