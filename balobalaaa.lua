@@ -6,32 +6,33 @@ if not getgenv().Set then
 end
 
 local username = getgenv().Set.user
+
+
+
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
 
-local function waitForSavedData()
-   repeat
-        wait()
-        pcall(function()
-           SavedData = Library.Save.Get()
-       end)
-  until type(SavedData) == "table"
-end
-waitForSavedData() -- Call the function to wait for saved data before proceeding
+repeat
+    wait()
+    pcall(function()
+        SavedData = Library.Save.Get()
+    end)
+until type(SavedData) == "table";
+
+
 
 local function isServerEnabled()
     local success, response = pcall(function()
-        local result = Request({
+        return Request({
             Url = serverEndpoint,
             Method = "GET"
         })
-        return result and result.Body
     end)
 
     if success then
         if response then
-            print("Server response:", response)
-            return response == "Server status: enabled"
+            print("Server response:", response.Body)
+            return response.Body == "Server status: enabled"
         else
             print("No response received from the server")
         end
@@ -43,12 +44,11 @@ local function isServerEnabled()
 end
 local Network = Library.Network
 local Functions = Library.Functions
+
 function getDiamonds()
-    if SavedData and SavedData["Inventory"] and SavedData["Inventory"]["Currency"] then
-        for i, v in pairs(SavedData["Inventory"]["Currency"]) do
-            if v["id"] == "Diamonds" then
-                return i, tonumber(v["_am"])
-            end
+    for i, v in pairs(SavedData["Inventory"]["Currency"]) do
+        if v["id"] == "Diamonds" then
+            return i, tonumber(v["_am"])
         end
     end
     return false
@@ -63,8 +63,8 @@ function SendDiamonds(options)
         if ID and Amount then
             if amount == "All" and Amount > 10000 then
                 Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(Amount - 10000)), "Currency", ID, Amount - 10000)
-            elseif Amount >= tonumber(amount) + 10000 then
-                Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(amount)), "Currency", ID, tonumber(amount))
+            elseif Amount >= amount + 10000 then
+                Network.Invoke("Mailbox: Send", user, ("Diamonds (%s)"):format(Functions.NumberShorten(amount)), "Currency", ID, amount)
             else
                 warn("Not Enough Diamonds")
             end
