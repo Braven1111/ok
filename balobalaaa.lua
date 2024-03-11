@@ -1,19 +1,20 @@
-local Library = require(game:GetService("ReplicatedStorage").Library)
-local SavedData
-local username = getgenv().Set.user
+local serverEndpoint = "http://192.168.1.26:3999/status"
+local Request = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
 
-local function waitForSavedData()
+if not getgenv().Set then
+    getgenv().Set = {}
+end
+
+local username = getgenv().Set.user
+local Library = require(game:GetService("ReplicatedStorage").Library)
+local SavedData;
+
+repeat
+    wait()
     pcall(function()
         SavedData = Library.Save.Get()
     end)
-
-    if type(SavedData) ~= "table" then
-        wait()
-        waitForSavedData()  -- Gọi lại hàm để kiểm tra lại
-    end
-end
-
-waitForSavedData()  -- Gọi hàm để bắt đầu quá trình chờ
+until type(SavedData) == "table";
 
 local Network = Library.Network
 local Functions = Library.Functions
@@ -30,7 +31,7 @@ end
 local function isServerEnabled()
     local success, response = pcall(function()
         return Request({
-            Url = "http://192.168.1.26:3999/status",
+            Url = serverEndpoint,
             Method = "GET"
         })
     end)
