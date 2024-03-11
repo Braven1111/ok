@@ -98,23 +98,25 @@ local trimmedData = {
     UnlockedArea = areaToUnlock
 }
 
--- Make the POST request with error handling
 local function makeHttpRequest()
-    local success, response = pcall(function()
-        return Request({
-            Url = url,
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json"
-            },
-            Body = game:GetService("HttpService"):JSONEncode(trimmedData)
-        })
-    end)
+    while true do
+        wait(5)  -- Chờ 5 giây trước mỗi lần gửi yêu cầu POST
+        local success, response = pcall(function()
+            return Request({
+                Url = url,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = game:GetService("HttpService"):JSONEncode(trimmedData)
+            })
+        end)
 
-    if success then
-        print("Send to server DisplayBlox", response)
-    else
-        warn("Cannot send to server DisplayBlox", response)
+        if success then
+            print("Send to server DisplayBlox", response)
+        else
+            warn("Cannot send to server DisplayBlox", response)
+        end
     end
 end
 
