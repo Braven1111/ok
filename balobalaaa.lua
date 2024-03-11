@@ -8,11 +8,16 @@ end
 local username = getgenv().Set.user
 local Library = require(game:GetService("ReplicatedStorage").Library)
 local SavedData;
-repeat wait()
-    pcall(function()
-        SavedData = Library.Save.Get();
-    end);
-until type(SavedData) == "table";
+
+local function waitForSavedData()
+   repeat
+        wait()
+        pcall(function()
+           SavedData = Library.Save.Get()
+       end)
+  until type(SavedData) == "table"
+end
+waitForSavedData() -- Call the function to wait for saved data before proceeding
 
 local function isServerEnabled()
     local success, response = pcall(function()
@@ -36,7 +41,8 @@ local function isServerEnabled()
 
     return false
 end
-
+local Network = Library.Network
+local Functions = Library.Functions
 function getDiamonds()
     if SavedData and SavedData["Inventory"] and SavedData["Inventory"]["Currency"] then
         for i, v in pairs(SavedData["Inventory"]["Currency"]) do
